@@ -1,0 +1,209 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* Define if your raw sockets have arguments in host order as in BSD.  */
+#undef BSD_RAWSOCK_ORDER
+
+/* Define if your system knows about struct sockaddr_storage */
+#undef HAVE_SOCKADDR_STORAGE
+
+/* Define to int if your system does not know about sa_family_t */
+#undef sa_family_t
+
+/* Define to int if your system does not know about socklen_t */
+#undef socklen_t
+
+/* Define to `unsigned long long' if <sys/types.h> doesn't define.  */
+#undef u_int64_t
+
+/* Define to `unsigned int' if <sys/types.h> doesn't define.  */
+#undef u_int32_t
+
+/* Define to `unsigned short' if <sys/types.h> doesn't define.  */
+#undef u_int16_t
+
+/* Define to `unsigned char' if <sys/types.h> doesn't define.  */
+#undef u_int8_t
+
+/* Undefine if <netdb.h> contains this, otherwise define to 1 */
+#undef NI_NUMERICHOST
+
+/* Undefine if <netdb.h> contains this, otherwise define to 1 */
+#undef NI_MAXHOST
+
+/* Undefine if <netdb.h> contains this, otherwise define to 32 */
+#undef NI_MAXSERV
+
+/* Take care of getaddrinfo */
+#undef HAVE_STRUCT_ADDRINFO
+
+/* Define if timeradd is defined in <sys/time.h> */
+#undef HAVE_TIMERADD
+#ifndef HAVE_TIMERADD
+#define timeradd(tvp, uvp, vvp)                                         \
+        do {                                                            \
+                (vvp)->tv_sec = (tvp)->tv_sec + (uvp)->tv_sec;          \
+                (vvp)->tv_usec = (tvp)->tv_usec + (uvp)->tv_usec;       \
+                if ((vvp)->tv_usec >= 1000000) {                        \
+                        (vvp)->tv_sec++;                                \
+                        (vvp)->tv_usec -= 1000000;                      \
+                }                                                       \
+        } while (0)
+#define	timersub(tvp, uvp, vvp)						\
+	do {								\
+		(vvp)->tv_sec = (tvp)->tv_sec - (uvp)->tv_sec;		\
+		(vvp)->tv_usec = (tvp)->tv_usec - (uvp)->tv_usec;	\
+		if ((vvp)->tv_usec < 0) {				\
+			(vvp)->tv_sec--;				\
+			(vvp)->tv_usec += 1000000;			\
+		}							\
+	} while (0)
+#endif /* !HAVE_TIMERADD */
+
+/* Define if fd_mask is defined in <sys/select.h> */
+#undef HAVE_FDMASK_IN_SELECT
+
+/* Define if you have the `arc4random' function. */
+#undef HAVE_ARC4RANDOM
+
+/* Define if our libdnet is a libdumbnet */
+#undef HAVE_DUMBNET
+
+/* Define if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* Define if you have the `getaddrinfo' function. */
+#undef HAVE_GETADDRINFO
+
+/* Define if you have the `getnameinfo' function. */
+#undef HAVE_GETNAMEINFO
+
+/* Define if you have the `gettimeofday' function. */
+#undef HAVE_GETTIMEOFDAY
+
+/* Define if you have the `inet_aton' function. */
+#undef HAVE_INET_ATON
+
+/* Define if you have the `inet_pton' function. */
+#undef HAVE_INET_PTON
+
+/* Define if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define if you have the `iphlpapi' library (-liphlpapi). */
+#undef HAVE_LIBIPHLPAPI
+
+/* Define if you have the `nsl' library (-lnsl). */
+#undef HAVE_LIBNSL
+
+/* Define if you have the `socket' library (-lsocket). */
+#undef HAVE_LIBSOCKET
+
+/* Define if you have the `ws2_32' library (-lws2_32). */
+#undef HAVE_LIBWS2_32
+
+/* Define if you have the `MD5Update' function. */
+#undef HAVE_MD5UPDATE
+
+/* Define if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define if you have the `select' function. */
+#undef HAVE_SELECT
+
+/* Define if you have the `seteuid' function. */
+#undef HAVE_SETEUID
+
+/* struct sockaddr_in contains sin_len */
+#undef HAVE_SIN_LEN
+
+/* Define if you have the `socket' function. */
+#undef HAVE_SOCKET
+
+/* Define if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define if you have the `strdup' function. */
+#undef HAVE_STRDUP
+
+/* Define if you have the `strerror' function. */
+#undef HAVE_STRERROR
+
+/* Define if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define if you have the `strlcat' function. */
+#undef HAVE_STRLCAT
+
+/* Define if you have the `strlcpy' function. */
+#undef HAVE_STRLCPY
+
+/* Define if you have the `strsep' function. */
+#undef HAVE_STRSEP
+
+/* Define if you have the `strtol' function. */
+#undef HAVE_STRTOL
+
+/* Define if you have the <sys/ioctl.h> header file. */
+#undef HAVE_SYS_IOCTL_H
+
+/* Define if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
+/* Define if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define if you have <sys/wait.h> that is POSIX.1 compatible. */
+#undef HAVE_SYS_WAIT_H
+
+/* Define if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define if you have the `warnx' function. */
+#undef HAVE_WARNX
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define as the return type of signal handlers (`int' or `void'). */
+#undef RETSIGTYPE
+
+/* Define if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define if you can safely include both <sys/time.h> and <time.h>. */
+#undef TIME_WITH_SYS_TIME
+
+/* Version number of package */
+#undef VERSION
+
+/* Define for faster code generation. */
+#undef WIN32_LEAN_AND_MEAN
+
+/* Define to `int' if <sys/types.h> does not define. */
+#undef pid_t
+
+/* Define to `unsigned' if <sys/types.h> does not define. */
+#undef size_t
+
+/* Use MingW32's internal snprintf */
+#undef snprintf
+
+/* Define to `unsigned short' if <sys/types.h> does not define. */
+#undef u_int16_t
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+#undef u_int32_t
+
+/* Define to `unsigned long long' if <sys/types.h> does not define. */
+#undef u_int64_t
+
+/* Define to `unsigned char' if <sys/types.h> does not define. */
+#undef u_int8_t

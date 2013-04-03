@@ -1,0 +1,185 @@
+.\"
+.\" Copyright 2000 Niels Provos <provos@citi.umich.edu>
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed by Niels Provos.
+.\" 4. The name of the author may not be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+.\" OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+.\" IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+.\" INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+.\" NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+.\" DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+.\" THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+.\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+.\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.\"
+.\" Manual page, using -mandoc macros
+.\"
+.Dd July 17, 2000
+.Dt scanssh 1
+.Os
+.Sh NAME
+.Nm scanssh
+.Nd scans the Internet for open proxies and SSH servers
+.Sh SYNOPSIS
+.Nm scanssh
+.Op Fl VIERph
+.Op Fl s Ar scanners,...
+.Op Fl n Ar ports,...
+.Op Fl u Ar socks hosts,...
+.Op Fl e Ar excludefile
+.Ar addresses...
+.Sh DESCRIPTION
+.Nm ScanSSH
+scans the given addresses and networks for running services.
+It mainly allows the detection of open proxies and Internet
+services.
+For known services,
+.Nm ScanSSH
+will query their version number and displays the results in a list.
+.Pp
+The adresses can be either specified as an IPv4 address or an CIDR like
+IP prefix,
+.Ar ipaddress/masklength .
+Ports can be appended by adding a colon at the end of address
+specification.
+
+Additionally, the following two commands can be prefixed to the
+address:
+.Bl -tag -width randomxnxxseedxxx
+.It random(n[,seed])/
+The random command selects random address from the address range
+specified. 
+The arguments are as follows:
+.Ar n
+is the number of address to randomly create in the given network
+and
+.Ar seed
+is a seed for the pseudo random number generator.
+.It split(s,e)/
+The split command is used to split the address range in several
+unique components.  This can be use to scan from serveral hosts
+in parallel.
+The arguments are as follows:
+.Ar e
+specifies the number of hosts scanning in parallel
+and
+.Ar s
+is the number of the host this particular scan runs on.
+.El
+.Pp
+The options are as follows:
+.Bl -tag -width e_excludefile_
+.It Fl V
+Causes
+.Nm
+to print its version number.
+.It Fl I
+Does not send a SSH identification string.
+.It Fl E
+Exit the program, if the file containing the addresses for exclusion
+can not be found.
+.It Fl R
+If addresses are generated at random, this flag causes the program
+to ignore excluded addresses from the exclude file.  The default
+behaviour is to always exclude addresses.
+.It Fl p
+Specifies that
+.Nm ScanSSH
+should operate as a proxy detector.
+This flag sets the default modes and default scanners to detect
+open proxies.
+.It Fl h
+Displays the usage of the program.
+.It Fl n Ar ports,...
+Specifies the port numbers to scan.
+Ports are separated by commas.
+Each specified scanner is run for each port in this list.
+The default is 22.
+.It Fl u Ar socks hosts,...
+A list of comma separated host:port pairs of SOCKS proxies that
+.Nm
+should use to scan through.
+.It Fl s Ar scanners
+Specifies a number of scanners should be executed for each open port.
+Multiple scanners are separated by commas.
+The following scanners are currently supported:
+.Bl -tag -width telnetxproxyx
+.It ssh
+Finds versions for SSH, Web and SMTP servers.
+.It socks5
+Detects if a SOCKS V5 proxy is running on the port.
+.It socks4
+Detects if a SOCKS V4 proxy is running on the port.
+.It http-proxy
+Detects a HTTP get proxy.
+.It http-connect
+Detects a HTTP connect proxy.
+.It telnet-proxy
+Detects telnet based proxy servers.
+.El
+.It Fl e Ar excludefile
+Specifies the file that contains the addresses to be excluded from the scan.
+The syntax is the same as for the addresses on the command line.
+.El
+.Pp
+The output from 
+.Nm
+contains only IP addresses.  However, the IP addresses can be
+converted to names with the
+.Xr logresolve 8
+tool included in the Apache webserver.
+
+.\" The following requests should be uncommented and
+.\" used where appropriate.  This next request is
+.\" for sections 2 and 3 function return values only.
+.\" .Sh RETURN VALUES
+.\" This next request is for sections 1, 6, 7 & 8 only
+.\" .Sh ENVIRONMENT
+.\" .Sh FILES
+.Sh EXAMPLES
+The following command scans the class C network 10.0.0.0 - 10.0.0.255
+for open proxies:
+.Bd -literal
+scanssh -p 10.0.0.0/24
+.Ed
+.Pp
+The next command scans for ssh servers on port 22 only:
+.Bd -literal
+scanssh -n 22 -s ssh 192.168.0.0/16
+.Ed
+.Pp
+The following command can be used in a parallel scan.  Two hosts scan the specified networks randomly, where this is the first host:
+.Bd -literal
+scanssh 'random(0,rsd)/split(1,2)/(192.168.0.0/16 10.1.0.0/24):22,80'
+.Ed
+.\" This next request is for sections 1, 6, 7 & 8 only
+.\"     (command return values (to shell) and
+.\"       fprintf/stderr type diagnostics)
+.\" .Sh DIAGNOSTICS
+.\" The next request is for sections 2 and 3 error
+.\" and signal handling only.
+.\" .Sh ERRORS
+.\" .Sh SEE ALSO
+.\" .Sh STANDARDS
+.\" .Sh HISTORY
+.\" .Sh AUTHORS
+.Sh BUGS
+At the moment, 
+.Nm
+leaves a one line entry in the log file of the ssh server.  It is
+probably not possible to avoid that.
