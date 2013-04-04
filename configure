@@ -2736,7 +2736,7 @@ fi
 # Define the identity of the package.
 
  PACKAGE=scanssh
- VERSION=2.1
+ VERSION=2.1.1
 
 
 cat >>confdefs.h <<_ACEOF
