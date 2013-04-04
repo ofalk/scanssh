@@ -1,0 +1,36 @@
+2013-04-04  Oliver Falk <oliver@linux-kernel.at>
+
+	* configure, configure.in: * Move version to 2.1.1 to reflect updates
+
+2013-04-04  Oliver Falk <oliver@linux-kernel.at>
+
+	* Makefile.am, Makefile.in: * README -> README.md, since on github
+
+2013-04-04  Oliver Falk <oliver@linux-kernel.at>
+
+	* Makefile.in, aclocal.m4, config.h.in, configure: * Update with autoreconf
+
+2013-04-03  Oliver Falk <oliver@linux-kernel.at>
+
+	* README.md: * Update READMEs
+
+2013-04-03  Oliver Falk <oliver@linux-kernel.at>
+
+	* README: * Update READMEs
+
+2013-04-03  Oliver Falk <oliver@linux-kernel.at>
+
+	* Makefile.am, Makefile.in, README, TODO, acconfig.h, aclocal.m4,
+	arc4random.c, atomicio.c, compat/err.h, compat/libdnet/dnet.h,
+	compat/md5.h, compat/sys/queue.h, compat/sys/tree.h, config.guess,
+	config.h.in, config.sub, configure, configure.in, connecter.c,
+	err.c, exclude.c, exclude.h, getaddrinfo.c, getnameinfo.c, http.c,
+	inet_aton.c, inet_pton.c, install-sh, interface.c, interface.h,
+	md5.c, missing, mkinstalldirs, scanssh.1, scanssh.c, scanssh.h,
+	socks.c, socks.h, stamp-h.in, strlcat.c, strlcpy.c, strsep.c,
+	telnet.c, xmalloc.c, xmalloc.h: * Initial commit
+
+2013-04-03  Oliver Falk <oliver@linux-kernel.at>
+
+	* Initial commit
+
