@@ -13,7 +13,7 @@ INCLUDES = -I$(top_srcdir)/@DNETCOMPAT@ -I$(top_srcdir)/compat \
 
 man_MANS = scanssh.1
 
-EXTRA_DIST = $(man_MANS) README acconfig.h \
+EXTRA_DIST = $(man_MANS) README.md acconfig.h \
 	   md5.c err.c \
 	   compat/libdnet/dnet.h \
 	   compat/err.h compat/md5.h \
