@@ -44,7 +44,3 @@ MAINTAINER
 Since Niels doesn't have any time to take care about this piece of software
 and I'm one of the Fedora packagers for it, I took it over and do maintain it
 now on https://github.com/ofalk/scanssh.
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ofalk/scanssh/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
