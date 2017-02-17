@@ -1151,8 +1151,13 @@ main(int argc, char **argv)
 	    "(tcp[13] & 18 = 18 or tcp[13] & 4 = 4)");
 
 	/* Raising file descriptor limits */
+#ifdef __APPLE__
+	rl.rlim_max = 10240;
+	rl.rlim_cur = 10240;
+#else
 	rl.rlim_max = RLIM_INFINITY;
 	rl.rlim_cur = RLIM_INFINITY;
+#endif
 	if (setrlimit(RLIMIT_NOFILE, &rl) == -1) {
 		/* Linux does not seem to like this */
 		if (getrlimit(RLIMIT_NOFILE, &rl) == -1)
