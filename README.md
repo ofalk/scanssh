@@ -44,5 +44,3 @@ MAINTAINER
 Since Niels doesn't have any time to take care about this piece of software
 and I'm one of the Fedora packagers for it, I took it over and do maintain it
 now on https://github.com/ofalk/scanssh.
-
-[![Build Status](https://semaphoreci.com/api/v1/falko/scanssh/branches/master/badge.svg)](https://semaphoreci.com/falko/scanssh)
