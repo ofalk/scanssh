@@ -64,6 +64,7 @@
 #include "exclude.h"
 #include "xmalloc.h"
 #include "interface.h"
+#include "string-compat.h"
 
 #ifndef howmany
 #define howmany(x,y)	(((x) + ((y) - 1)) / (y))

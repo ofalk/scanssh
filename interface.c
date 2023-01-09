@@ -55,6 +55,7 @@
 #include <dnet.h>
 
 #include "interface.h"
+#include "string-compat.h"
 
 /* Prototypes */
 static int pcap_dloff(pcap_t *);

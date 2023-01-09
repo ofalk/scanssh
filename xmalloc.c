@@ -19,6 +19,7 @@
 #include <string.h>
 
 #include "config.h"
+#include "string-compat.h"
 
 void *
 xmalloc(size_t size)

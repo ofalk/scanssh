@@ -28,6 +28,8 @@
 #ifndef _SCANSSH_H_
 #define _SCANSSH_H_
 
+#include <sys/queue.h>
+
 #define SSHMAPVERSION	"SSH-1.0-SSH_Version_Mapper\n"
 #define SSHUSERAGENT	"ScanSSH/2.0"
 #define MAXITER		10

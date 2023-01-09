@@ -29,6 +29,8 @@
 #include "config.h"
 #endif
 
+#include <string.h>
+
 #include "md5.h"
 
 /* Little-endian byte-swapping routines.  Note that these do not

@@ -34,6 +34,7 @@ static char *rcsid = "$OpenBSD: strlcpy.c,v 1.2 1998/11/06 04:33:16 wvdputte Exp
 
 #include <sys/types.h>
 #include <string.h>
+#include "string-compat.h"
 
 /*
  * Copy src to string dst of size siz.  At most siz-1 characters
