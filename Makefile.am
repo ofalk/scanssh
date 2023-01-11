@@ -8,7 +8,7 @@ scanssh_SOURCES = scanssh.c atomicio.c exclude.c connecter.c xmalloc.c \
 scanssh_LDADD = @LIBOBJS@ @PCAPLIB@ @EVENTLIB@ @DNETLIB@
 CFLAGS = -O2 -Wall -g
 
-INCLUDES = -I$(top_srcdir)/@DNETCOMPAT@ -I$(top_srcdir)/compat \
+AM_CPPFLAGS = -I$(top_srcdir)/@DNETCOMPAT@ -I$(top_srcdir)/compat \
 	@EVENTINC@ @PCAPINC@ @DNETINC@
 
 man_MANS = scanssh.1

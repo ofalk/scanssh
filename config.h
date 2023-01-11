@@ -1,5 +1,5 @@
 /* config.h.  Generated from config.h.in by configure.  */
-/* config.h.in.  Generated from configure.in by autoheader.  */
+/* config.h.in.  Generated from configure.ac by autoheader.  */
 /* Define if your raw sockets have arguments in host order as in BSD.  */
 /* #undef BSD_RAWSOCK_ORDER */
 
