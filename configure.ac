@@ -1,9 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(scanssh)
+AC_INIT([scanssh],[2.1.3],[https://github.com/ofalk/scanssh/issues])
+AC_CONFIG_SRCDIR([scanssh])
 AC_CONFIG_SRCDIR(scanssh.c)
 
-AM_INIT_AUTOMAKE(scanssh, 2.1.2)
-AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE
 
 dnl Check for system type.
 dnl XXX - we do this to qualify our later feature checks, since some
@@ -24,8 +24,12 @@ AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, gethostbyname)
 
 dnl XXX - we need WinPcap developer's pack under Cygwin for win32
-AC_CYGWIN
-if test "$CYGWIN" = yes ; then
+
+AC_DEFUN([SCANSSH_CYGWIN],
+[
+AC_REQUIRE([AC_CANONICAL_HOST])[]dnl
+case $host_os in
+    *cygwin* )
 	if test -d /usr/include/mingw ; then
 		CPPFLAGS="$CPPFLAGS -mno-cygwin"
 		CFLAGS="$CFLAGS -mno-cygwin"
@@ -62,7 +66,10 @@ if test "$CYGWIN" = yes ; then
 	     AC_MSG_ERROR(WinPcap developer's pack not found)
 	  fi
 	  AC_MSG_RESULT(yes) ])
-fi
+  * ) AC_MSG_RESULT(no)
+  ;;
+esac
+])
 
 dnl Checks for libraries.
 AC_REPLACE_FUNCS(inet_aton inet_pton strsep getaddrinfo getnameinfo strlcpy strlcat arc4random)
@@ -93,7 +100,7 @@ AC_ARG_WITH(libpcap,
 	PCAPINC="-I$withval -I$withval/bpf"
 	PCAPLIB="-L$withval -lpcap"
      else
-        AC_ERROR(pcap.h or libpcap.a not found in $withval)
+        AC_MSG_ERROR(pcap.h or libpcap.a not found in $withval)
      fi
      ;;
   esac ],
@@ -107,7 +114,7 @@ AC_ARG_WITH(libpcap,
      PCAPLIB="-lpcap"
   else
      AC_MSG_RESULT(no)
-     AC_ERROR(libpcap not found)
+     AC_MSG_ERROR(libpcap not found)
   fi
   AC_MSG_RESULT(yes) ]
 )
@@ -119,7 +126,7 @@ AC_ARG_WITH(libdnet,
 [  --with-libdnet=DIR      use libdnet in DIR],
 [ case "$withval" in
   yes|no)
-     AC_ERROR([Please specify directory containing dnet-config when using --with-libdnet])
+     AC_MSG_ERROR(Please specify directory containing dnet-config when using --with-libdnet)
      ;;
   *)
      AC_MSG_CHECKING(for libdnet)
@@ -132,7 +139,7 @@ AC_ARG_WITH(libdnet,
 	DNETLIB="`$withval/bin/dnet-config --libs`"
      else
         AC_MSG_RESULT(no)
-        AC_ERROR(dnet-config not found in $withval/bin)
+        AC_MSG_ERROR(dnet-config not found in $withval/bin)
      fi
      ;;
   esac
@@ -140,7 +147,7 @@ AC_ARG_WITH(libdnet,
 [ dnl This is the default case so let's just use AC_PATH_PROG! --CPK.
   AC_PATH_PROG(dnetconfig, dnet-config, "no")
   if test "$dnetconfig" = "no"; then
-     AC_ERROR(dnet-config not found)
+     AC_MSG_ERROR(dnet-config not found)
   else
      DNETINC="`$dnetconfig --cflags`"
      DNETLIB="`$dnetconfig --libs`"
@@ -175,21 +182,6 @@ else
 fi
 LIBS=$DNETLIB
 
-        AC_MSG_CHECKING(for working addr_pton in libdnet)
-        AC_TRY_RUN(
-#include <sys/types.h>
-#include <stdlib.h>
-#include <dnet.h>
-int
-main(int argc, char **argv)
-{
-	struct addr a1;
-
-	addr_pton("0.0.0.0/0", &a1);
-
-        exit(a1.addr_bits != 0);
-}, AC_MSG_RESULT(yes), AC_WARNING(your version of libdnet is buggy - working around it), AC_MSG_RESULT(yes))
-
 dnl Checks for libevent
 AC_MSG_CHECKING(for libevent)
 AC_ARG_WITH(libevent,
@@ -206,7 +198,7 @@ AC_ARG_WITH(libevent,
         EVENTINC="-I$withval"
         EVENTLIB="-L$withval -levent"
      else
-        AC_ERROR(event.h or libevent.a not found in $withval)
+        AC_MSG_ERROR(event.h or libevent.a not found in $withval)
      fi
      ;;
   esac ],
@@ -220,7 +212,7 @@ AC_ARG_WITH(libevent,
      EVENTLIB="-levent"
   else
      AC_MSG_RESULT(no)
-     AC_ERROR(libevent not found)
+     AC_MSG_ERROR(libevent not found)
   fi
   AC_MSG_RESULT(yes) ]
 )
@@ -230,24 +222,9 @@ AC_SUBST(EVENTLIB)
 CFLAGS=$EVENTINC
 LIBS=$EVENTLIB
 
-	AC_MSG_CHECKING(for bufferevent in libevent)
-	AC_TRY_LINK([
-#include <sys/types.h>
-#include <sys/time.h>
-#include <stdlib.h>
-#include <event.h>],[
-	struct bufferevent bev;
-	bufferevent_settimeout(&bev, 1, 1);
-], AC_MSG_RESULT(yes), [
-        AC_ERROR([you need to install a more recent version of libevent,
-	check http://www.monkey.org/~provos/libevent/])
-], AC_MSG_RESULT(yes))
-
 CFLAGS=""
 LIBS=""
 
-dnl Checks for header files.
-AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h sys/time.h unistd.h)
 
@@ -266,7 +243,6 @@ AC_CHECK_TYPE(u_int64_t, unsigned long long)
 AC_CHECK_TYPE(u_int32_t, unsigned int)
 AC_CHECK_TYPE(u_int16_t, unsigned short)
 AC_CHECK_TYPE(u_int8_t, unsigned char)
-AC_HEADER_TIME
 
 AC_MSG_CHECKING([for struct sockaddr_storage in sys/socket.h])
 AC_EGREP_HEADER(sockaddr_storage, sys/socket.h,
@@ -311,61 +287,45 @@ AC_EGREP_CPP(yes,
 )
 	
 AC_MSG_CHECKING([for sin_len in struct sockaddr_in])
-AC_TRY_COMPILE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
  #include <sys/types.h>
  #include <sys/socket.h>
- #include <netinet/in.h>],
-  [void *p = &((struct sockaddr_in *)0L)->sin_len;],
-  [ AC_MSG_RESULT([yes])
-    AC_DEFINE(HAVE_SIN_LEN, 1, [struct sockaddr_in contains sin_len]) ],
-  AC_MSG_RESULT([no])
-)
+ #include <netinet/in.h>]], [[void *p = &((struct sockaddr_in *)0L)->sin_len;]])],[ AC_MSG_RESULT([yes])
+    AC_DEFINE(HAVE_SIN_LEN, 1, [struct sockaddr_in contains sin_len]) ],[AC_MSG_RESULT(no)
+])
 
 AC_MSG_CHECKING([for sa_family_t])
-AC_TRY_COMPILE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
  #include <sys/types.h>
- #include <sys/socket.h>],
-  [sa_family_t x;],
-  AC_MSG_RESULT([yes]),
-  [AC_MSG_RESULT([no])
-  AC_DEFINE(sa_family_t, int)]
-)
+ #include <sys/socket.h>]], [[sa_family_t x;]])],[AC_MSG_RESULT(yes)],[AC_MSG_RESULT([no])
+  AC_DEFINE(sa_family_t, int)
+])
 
 AC_MSG_CHECKING([for socklen_t])
-AC_TRY_COMPILE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
  #include <sys/types.h>
- #include <sys/socket.h>],
-  [socklen_t x;],
-  AC_MSG_RESULT([yes]),
-  [AC_MSG_RESULT([no])
-  AC_DEFINE(socklen_t, int)]
-)
+ #include <sys/socket.h>]], [[socklen_t x;]])],[AC_MSG_RESULT(yes)],[AC_MSG_RESULT([no])
+  AC_DEFINE(socklen_t, int)
+])
 
 AC_MSG_CHECKING([for NI_NUMERICHOST])
-AC_TRY_COMPILE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
  #include <sys/types.h>
  #include <sys/socket.h>
- #include <netdb.h>],
-  [char x[NI_NUMERICHOST];],
-  AC_MSG_RESULT([yes]),
-  [AC_MSG_RESULT([no])
+ #include <netdb.h>]], [[char x[NI_NUMERICHOST];]])],[AC_MSG_RESULT(yes)],[AC_MSG_RESULT([no])
   AC_DEFINE(NI_NUMERICHOST, 1)
-  AC_DEFINE(NI_MAXHOST, 256)]
-)
+  AC_DEFINE(NI_MAXHOST, 256)
+])
 
 AC_MSG_CHECKING([for NI_MAXSERV])
-AC_TRY_COMPILE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
  #include <sys/types.h>
  #include <sys/socket.h>
- #include <netdb.h>],
-  [char x[NI_MAXSERV];],
-  AC_MSG_RESULT([yes]),
-  [AC_MSG_RESULT([no])
-  AC_DEFINE(NI_MAXSERV, 32)]
-)
+ #include <netdb.h>]], [[char x[NI_MAXSERV];]])],[AC_MSG_RESULT(yes)],[AC_MSG_RESULT([no])
+  AC_DEFINE(NI_MAXSERV, 32)
+])
 
-dnl Checks for library functions.
-AC_TYPE_SIGNAL
 AC_CHECK_FUNCS(gettimeofday select socket strdup strerror strtol seteuid)
 
-AC_OUTPUT(Makefile)
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
