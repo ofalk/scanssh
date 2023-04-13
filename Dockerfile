@@ -1,4 +1,4 @@
-FROM docker.io/centos
+FROM docker.io/centos:8.4.2105
 
 MAINTAINER Oliver Falk <oliver@linux-kernel.at>
 
