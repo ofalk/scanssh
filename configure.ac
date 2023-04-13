@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT([scanssh],[2.1.3],[https://github.com/ofalk/scanssh/issues])
+AC_INIT([scanssh],[2.1.3.1],[https://github.com/ofalk/scanssh/issues])
 AC_CONFIG_SRCDIR([scanssh])
 AC_CONFIG_SRCDIR(scanssh.c)
 

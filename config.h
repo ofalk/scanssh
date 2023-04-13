@@ -204,7 +204,7 @@
 #define TIME_WITH_SYS_TIME 1
 
 /* Version number of package */
-#define VERSION "2.1.3"
+#define VERSION "2.1.3.1"
 
 /* Define for faster code generation. */
 /* #undef WIN32_LEAN_AND_MEAN */
