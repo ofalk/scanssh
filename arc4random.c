@@ -1,5 +1,6 @@
 #include <sys/types.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "config.h"
 
