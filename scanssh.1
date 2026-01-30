@@ -52,12 +52,11 @@ For known services,
 .Nm ScanSSH
 will query their version number and displays the results in a list.
 .Pp
-The adresses can be either specified as an IPv4 address or an CIDR like
+The addresses can be either specified as an IPv4 address or an CIDR like
 IP prefix,
 .Ar ipaddress/masklength .
 Ports can be appended by adding a colon at the end of address
 specification.
-
 Additionally, the following two commands can be prefixed to the
 address:
 .Bl -tag -width randomxnxxseedxxx
@@ -72,7 +71,7 @@ and
 is a seed for the pseudo random number generator.
 .It split(s,e)/
 The split command is used to split the address range in several
-unique components.  This can be use to scan from serveral hosts
+unique components.  This can be use to scan from several hosts
 in parallel.
 The arguments are as follows:
 .Ar e
@@ -145,7 +144,6 @@ contains only IP addresses.  However, the IP addresses can be
 converted to names with the
 .Xr logresolve 8
 tool included in the Apache webserver.
-
 .\" The following requests should be uncommented and
 .\" used where appropriate.  This next request is
 .\" for sections 2 and 3 function return values only.
