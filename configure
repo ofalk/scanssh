@@ -5187,16 +5187,33 @@ then :
 printf %s "checking for libdnet... " >&6; }
      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $withval" >&5
 printf "%s\n" "$withval" >&6; }
-     if test -f $withval/src/libdnet.a; then
-	DNETINC="-I$withval/include"
-	DNETLIB="-L$withval/src -ldnet `$withval/dnet-config --libs`"
+     if test -f $withval/lib/libdnet.a -o -f $withval/src/libdnet.a; then
+        if test -f $withval/include/dnet.h; then
+           DNETINC="-I$withval/include"
+        elif test -f $withval/src/dnet.h; then
+           DNETINC="-I$withval/src/include"
+        fi
+        if test -f $withval/lib/libdnet.a; then
+           DNETLIB="-L$withval/lib -ldnet"
+        elif test -f $withval/src/libdnet.a; then
+           DNETLIB="-L$withval/src -ldnet"
+        fi
      elif test -x $withval/bin/dnet-config; then
-	DNETINC="`$withval/bin/dnet-config --cflags`"
-	DNETLIB="`$withval/bin/dnet-config --libs`"
+        DNETINC="`$withval/bin/dnet-config --cflags`"
+        DNETLIB="`$withval/bin/dnet-config --libs`"
+      elif test -x /usr/local/bin/dnet-config; then
+        DNETINC="`/usr/local/bin/dnet-config --cflags`"
+        DNETLIB="`/usr/local/bin/dnet-config --libs`"
+      elif test -x /opt/homebrew/bin/dnet-config; then
+        DNETINC="`/opt/homebrew/bin/dnet-config --cflags`"
+        DNETLIB="`/opt/homebrew/bin/dnet-config --libs`"
+      elif test -x /opt/local/bin/dnet-config; then
+        DNETINC="`/opt/local/bin/dnet-config --cflags`"
+        DNETLIB="`/opt/local/bin/dnet-config --libs`"
      else
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-        as_fn_error $? "dnet-config not found in $withval/bin" "$LINENO" 5
+        as_fn_error $? "dnet-config or libdnet.a not found in $withval" "$LINENO" 5
      fi
      ;;
   esac
