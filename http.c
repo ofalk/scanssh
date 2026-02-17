@@ -175,6 +175,7 @@ http_makeconnect(struct bufferevent *bev, struct argument *arg)
 
 	evbuffer_add_printf(EVBUFFER_OUTPUT(bev),
 	    "CONNECT %s:80 HTTP/1.0\r\n"
+	    "User-Agent: %s\r\n"
 	    "\r\n", addr_ntoa(socks_dst_addr), SSHUSERAGENT);
 	bufferevent_enable(bev, EV_WRITE);
 }
