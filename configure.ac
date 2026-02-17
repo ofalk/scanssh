@@ -17,6 +17,13 @@ fi
 
 dnl Checks for programs.
 AC_PROG_CC
+
+dnl Default CFLAGS when not set by user
+if test -z "$CFLAGS"; then
+	CFLAGS="-O2 -Wall -g"
+fi
+AC_SUBST(CFLAGS)
+
 AC_PROG_INSTALL
 
 dnl XXX - Solaris sux.

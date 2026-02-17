@@ -6,7 +6,7 @@ scanssh_SOURCES = scanssh.c atomicio.c exclude.c connecter.c xmalloc.c \
 	interface.c socks.c http.c telnet.c exclude.h interface.h \
 	scanssh.h socks.h xmalloc.h
 scanssh_LDADD = @LIBOBJS@ @PCAPLIB@ @EVENTLIB@ @DNETLIB@
-CFLAGS = -O2 -Wall -g
+CFLAGS = @CFLAGS@
 
 AM_CPPFLAGS = -I$(top_srcdir)/@DNETCOMPAT@ -I$(top_srcdir)/compat \
 	@EVENTINC@ @PCAPINC@ @DNETINC@
