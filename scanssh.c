@@ -1183,9 +1183,11 @@ main(int argc, char **argv)
        
 	/* revoke privs */
 #ifdef HAVE_SETEUID
-        seteuid(getuid());
+	if (seteuid(getuid()) == -1)
+		err(1, "seteuid");
 #endif /* HAVE_SETEUID */
-        setuid(getuid());
+	if (setuid(getuid()) == -1)
+		err(1, "setuid");
 
 	/* Set up our port ranges */
 	if (ss_nports == 0) {
