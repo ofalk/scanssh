@@ -92,21 +92,21 @@ telnet_makeconnect(struct bufferevent *bev, struct argument *arg)
 
 	socks_resolveaddress("www.google.com", &address);
 
-	if (evbuffer_find(input, CCPROXY, strlen(CCPROXY)) != NULL) {
+	if (evbuffer_find(input, (const unsigned char *)CCPROXY, strlen(CCPROXY)) != NULL) {
 		state->response = "telnet-proxy: CCproxy";
 		state->connect_wait = "OK!";
 		evbuffer_add_printf(EVBUFFER_OUTPUT(bev),
 		    "open %s:80\r\n", addr_ntoa(socks_dst_addr));
 		bufferevent_enable(bev, EV_WRITE);
 		return (1);
-	} else if (evbuffer_find(input, GATEWAY1, strlen(GATEWAY1)) != NULL) {
+	} else if (evbuffer_find(input, (const unsigned char *)GATEWAY1, strlen(GATEWAY1)) != NULL) {
 		state->response = "telnet-proxy: Gateway";
 		state->connect_wait = "Connected to:";
 		evbuffer_add_printf(EVBUFFER_OUTPUT(bev),
 		    "%s:80\r\n", addr_ntoa(socks_dst_addr));
 		bufferevent_enable(bev, EV_WRITE);
 		return (1);
-	} else if (evbuffer_find(input, GATEWAY2, strlen(GATEWAY2)) != NULL) {
+	} else if (evbuffer_find(input, (const unsigned char *)GATEWAY2, strlen(GATEWAY2)) != NULL) {
 		state->response = "telnet-proxy: Gateway";
 		/* 
 		 * We do not get a connection confirmation, just the echoed
@@ -117,7 +117,7 @@ telnet_makeconnect(struct bufferevent *bev, struct argument *arg)
 		    "%s:80\r\n", addr_ntoa(socks_dst_addr));
 		bufferevent_enable(bev, EV_WRITE);
 		return (1);
-	} else if (evbuffer_find(input, WINGATE, strlen(WINGATE)) != NULL) {
+	} else if (evbuffer_find(input, (const unsigned char *)WINGATE, strlen(WINGATE)) != NULL) {
 		state->response = "telnet-proxy: WinGate";
 		state->connect_wait = "...Connected";
 		evbuffer_add_printf(EVBUFFER_OUTPUT(bev),
@@ -176,7 +176,7 @@ telnet_readcb(struct bufferevent *bev, void *parameter)
 		if (res == -1) {
 			evbuffer_add(input, "", 1);
 			printres(arg, arg->a_ports[0].port, 
-			    EVBUFFER_DATA(input));
+			    (char *)EVBUFFER_DATA(input));
 			scanhost_return(bev, arg, 0);
 			return;
 		} else if (res == 1) {
@@ -184,7 +184,7 @@ telnet_readcb(struct bufferevent *bev, void *parameter)
 			bufferevent_disable(bev, EV_READ);
 		}
 	} else if (arg->a_flags & TELNET_READING_CONNECT) {
-		if (evbuffer_find(input, state->connect_wait,
+		if (evbuffer_find(input, (const unsigned char *)state->connect_wait,
 			strlen(state->connect_wait)) == NULL)
 			return;
 		evbuffer_drain(input, EVBUFFER_LENGTH(input));

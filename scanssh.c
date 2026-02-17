@@ -790,7 +790,7 @@ generate_random(struct generate *gen, char **pline)
 		uint32_t *tmp = (uint32_t *)digest;
 
 		MD5Init(&ctx);
-		MD5Update(&ctx, seed, strlen(seed));
+		MD5Update(&ctx, (const unsigned char *)seed, strlen(seed));
 		MD5Final(digest, &ctx);
 
 		gen->gen_seed = 0;

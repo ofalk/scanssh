@@ -184,22 +184,22 @@ socks_bufferanalyse(struct bufferevent *bev, struct argument *arg)
 	struct socks_state *socks = arg->a_state;
 	size_t off;
 	char response[32];
-	char *p;
+	unsigned char *p;
 	
 	if (!socks->gotheaders) {
-		while ((p = evbuffer_find(input, "\n", 1)) != NULL) {
-			off = (size_t)p - (size_t)EVBUFFER_DATA(input) + 1;
+		while ((p = evbuffer_find(input, (const unsigned char *)"\n", 1)) != NULL) {
+			off = (size_t)(p - EVBUFFER_DATA(input)) + 1;
 			if (off > 0 && *(p-1) == '\r')
 				*(p-1) = '\0';
 			*p = '\0';
 
-			if (strlen(EVBUFFER_DATA(input)) == 0) {
+			if (strlen((char *)EVBUFFER_DATA(input)) == 0) {
 				socks->gotheaders = 1;
 				evbuffer_drain(input, off);
 				break;
 			} else {
-				DFPRINTF((stderr, "Header: %s\n",
-					     EVBUFFER_DATA(input)));
+			DFPRINTF((stderr, "Header: %s\n",
+				     (char *)EVBUFFER_DATA(input)));
 			}
 			evbuffer_drain(input, off);
 		}
@@ -208,10 +208,10 @@ socks_bufferanalyse(struct bufferevent *bev, struct argument *arg)
 	if (!socks->gotheaders)
 		return;
 
-	if (evbuffer_find(input, "\r\n", 2) == NULL)
+	if (evbuffer_find(input, (const unsigned char *)"\r\n", 2) == NULL)
 		return;
 
-	if (evbuffer_find(input, socks->word, strlen(socks->word)) != NULL) {
+	if (evbuffer_find(input, (const unsigned char *)socks->word, strlen(socks->word)) != NULL) {
 		snprintf(response, sizeof(response),
 		    "SOCKS v%d", socks->version);
 		socks->success = 1;
