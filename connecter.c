@@ -233,7 +233,7 @@ ssh_process_line(struct evbuffer *input, struct argument *arg)
 	struct ssh_state *state = arg->a_state;
 	while (1) {
 		size_t off = 0;
-		char *p = EVBUFFER_DATA(input);
+		char *p = (char *)EVBUFFER_DATA(input);
 
 		while (off < EVBUFFER_LENGTH(input)) {
 			if (*p == '\r') {
@@ -250,7 +250,7 @@ ssh_process_line(struct evbuffer *input, struct argument *arg)
 			return (-1);
 
 		off++;
-		p = EVBUFFER_DATA(input);
+		p = (char *)EVBUFFER_DATA(input);
 
 		state->nlines++;
 		if (state->firstline == NULL && isprint(*p))

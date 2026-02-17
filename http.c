@@ -89,26 +89,26 @@ http_getheaders(struct bufferevent *bev, struct argument *arg)
 {
 	struct evbuffer *input = EVBUFFER_INPUT(bev);
 	size_t off;
-	char *p;
+	unsigned char *p;
 
-	while ((p = evbuffer_find(input, "\n", 1)) != NULL) {
-		off = (size_t)p - (size_t)EVBUFFER_DATA(input) + 1;
+	while ((p = evbuffer_find(input, (const unsigned char *)"\n", 1)) != NULL) {
+		off = (size_t)(p - EVBUFFER_DATA(input)) + 1;
 		if (off > 1 && *(p-1) == '\r')
 			*(p-1) = '\0';
 		*p = '\0';
 
-		if (strlen(EVBUFFER_DATA(input)) == 0) {
+		if (strlen((char *)EVBUFFER_DATA(input)) == 0) {
 			arg->a_flags |= HTTP_GOT_HEADERS;
 			evbuffer_drain(input, off);
 			break;
 		} else {
 			DFPRINTF((stderr, "Header: %s\n",
-				     EVBUFFER_DATA(input)));
+				     (char *)EVBUFFER_DATA(input)));
 		}
 
 		/* Check that we got an okay */
 		if (!(arg->a_flags & HTTP_GOT_OK)) {
-			if (http_response(EVBUFFER_DATA(input)) == -1) {
+			if (http_response((char *)EVBUFFER_DATA(input)) == -1) {
 				return (-1);
 			}
 			arg->a_flags |= HTTP_GOT_OK;
@@ -137,7 +137,7 @@ http_bufferanalyse(struct bufferevent *bev, struct argument *arg)
 	}
 
 	if (arg->a_flags & HTTP_GOT_HEADERS) {
-		if (evbuffer_find(input, "\r\n", 2) == NULL)
+		if (evbuffer_find(input, (const unsigned char *)"\r\n", 2) == NULL)
 			return (0);
 	
 		return (1);
