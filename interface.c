@@ -264,9 +264,12 @@ interface_expandips(int naddresses, char **addresses, int dstonly)
 		}
 
 		if (addr_pton(p, &dst) != -1) {
-			snprintf(line, sizeof(line), "%s%s%s",
-			    dstonly ? "dst " : "",
-			    dst.addr_bits != 32 ? "net ": "", p);
+			if (dst.addr_bits == 32)
+				snprintf(line, sizeof(line), "%shost %s",
+				    dstonly ? "dst " : "", p);
+			else
+				snprintf(line, sizeof(line), "%snet %s/%d",
+				    dstonly ? "dst " : "", p, dst.addr_bits);
 		} else {
 			char *first, *second;
 			struct addr astart, aend;
