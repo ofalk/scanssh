@@ -95,8 +95,14 @@ interface_new(char *dev)
 		err(1, "%s: calloc", __func__);
 
 	if (dev == NULL) {
-		if ((dev = pcap_lookupdev(ebuf)) == NULL)
-			errx(1, "pcap_lookupdev: %s", ebuf);
+		pcap_if_t *alldevs;
+		if (pcap_findalldevs(&alldevs, ebuf) == -1)
+			errx(1, "pcap_findalldevs: %s", ebuf);
+		if (alldevs == NULL)
+			errx(1, "pcap_findalldevs: no interfaces found");
+		strlcpy(ebuf, alldevs->name, sizeof(ebuf));
+		pcap_freealldevs(alldevs);
+		dev = ebuf;
 	}
 
 	TAILQ_INSERT_TAIL(&interfaces, inter, next);
