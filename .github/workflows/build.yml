@@ -1,0 +1,108 @@
+name: Build
+
+on:
+  push:
+    branches: [master, devel]
+  pull_request:
+    branches: [master, devel]
+  release:
+    types: [created]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.container }}
+    strategy:
+      matrix:
+        include:
+          - container: fedora:latest
+            deps: dnf install -y gcc make autoconf automake libpcap-devel libevent-devel libdnet-devel
+          - container: rockylinux:9
+            deps: dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled crb && dnf install -y epel-release && dnf install -y gcc make autoconf automake libpcap-devel libevent-devel libdnet-devel
+          - container: ubuntu:latest
+            deps: apt-get update && apt-get install -y gcc make autoconf automake libpcap-dev libevent-dev libdumbnet-dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: ${{ matrix.deps }}
+
+      - name: Autoreconf
+        run: autoreconf -f -i
+
+      - name: Configure
+        run: ./configure
+
+      - name: Build
+        run: make
+
+      - name: Test binary
+        run: ./scanssh -V
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: brew install autoconf automake libpcap libevent libdnet
+
+      - name: Autoreconf
+        run: autoreconf -f -i
+
+      - name: Configure
+        run: |
+          ./configure \
+            --with-libpcap=$(brew --prefix libpcap) \
+            --with-libevent=$(brew --prefix libevent) \
+            --with-libdnet=$(brew --prefix libdnet)
+
+      - name: Build
+        run: make
+
+      - name: Test binary
+        run: ./scanssh -V
+
+  build-freebsd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build on FreeBSD
+        uses: vmactions/freebsd-vm@v1
+        with:
+          usesh: true
+          prepare: pkg install -y gcc gmake autoconf automake libpcap libevent libdnet
+          run: |
+            autoreconf -f -i
+            ./configure
+            make
+            ./scanssh -V
+
+  create-dist:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    needs: [build-linux, build-macos, build-freebsd]
+    if: github.event_name == 'release'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: dnf install -y gcc make autoconf automake libpcap-devel libevent-devel libdnet-devel
+
+      - name: Create distribution
+        run: |
+          autoreconf -f -i
+          ./configure
+          make dist
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: scanssh-*.tar.gz

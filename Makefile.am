@@ -13,8 +13,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/@DNETCOMPAT@ -I$(top_srcdir)/compat \
 
 man_MANS = scanssh.1
 
-EXTRA_DIST = $(man_MANS) README.md \
-	   md5.c err.c \
+EXTRA_DIST = $(man_MANS) README.md RELEASING.md \
+	   md5.c err.c string-compat.h \
 	   compat/libdnet/dnet.h \
 	   compat/err.h compat/md5.h \
 	   compat/sys/queue.h compat/sys/tree.h
