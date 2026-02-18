@@ -100,15 +100,9 @@ jobs:
         uses: vmactions/openbsd-vm@v1
         with:
           usesh: true
-          prepare: |
-            pkg_add gcc-11.2.0p19 gmake libevent libdnet
-            pkg_info -Q autoconf
-            pkg_add autoconf
-            pkg_add automake
+          prepare: pkg_add gcc-11.2.0p19 gmake autoconf-2.72p0 automake-1.18 libevent libdnet
           run: |
-            ls -la /usr/local/bin/auto* /usr/local/bin/auto* 2>/dev/null || true
-            cat /usr/local/share/autoconf*/VERSION 2>/dev/null || true
-            AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 /usr/local/bin/autoreconf -f -i
+            AUTOCONF_VERSION=2.72 AUTOMAKE_VERSION=1.18 /usr/local/bin/autoreconf-2.72 -f -i
             ./configure
             gmake
             ./scanssh -V
