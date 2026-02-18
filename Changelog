@@ -1,3 +1,8 @@
+2026-02-18  Oliver Falk <oliver@linux-kernel.at>
+
+        * We haven't maintained this changelog in quota a while
+        * Use this: https://github.com/ofalk/scanssh/compare/ to check for the changes
+
 2013-04-04  Oliver Falk <oliver@linux-kernel.at>
 
 	* configure, configure.in: * Move version to 2.1.1 to reflect updates
