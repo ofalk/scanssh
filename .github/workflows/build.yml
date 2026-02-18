@@ -102,10 +102,7 @@ jobs:
           usesh: true
           prepare: pkg_add gcc-11.2.0p19 gmake autoconf automake libevent libdnet
           run: |
-            export PATH="/usr/local/bin:$PATH"
-            export AUTOCONF_VERSION=2.71
-            export AUTOMAKE_VERSION=1.17
-            autoreconf -f -i
+            AUTOCONF_VERSION=2.71 AUTOMAKE_VERSION=1.17 /usr/local/bin/autoreconf -f -i
             ./configure
             gmake
             ./scanssh -V
