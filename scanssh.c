@@ -388,7 +388,7 @@ ss_recv_cb(uint8_t *ag, const struct pcap_pkthdr *pkthdr, const uint8_t *pkt)
 	ushort iplen, iphlen;
 
 	/* Everything below assumes that the packet is IPv4 */
-	if (pkthdr->caplen < inter->if_dloff + IP_HDR_LEN)
+	if (pkthdr->caplen < inter->if_dloff + sizeof(struct ip_hdr))
 		return;
 
 	pkt += inter->if_dloff;
@@ -407,6 +407,9 @@ ss_recv_cb(uint8_t *ag, const struct pcap_pkthdr *pkthdr, const uint8_t *pkt)
 	addr_pack(&addr, ADDR_TYPE_IP, IP_ADDR_BITS, &ip->ip_src, IP_ADDR_LEN);
 
 	if (iplen < iphlen + TCP_HDR_LEN)
+		return;
+
+	if (pkthdr->caplen < inter->if_dloff + iphlen + sizeof(struct tcp_hdr))
 		return;
 
 	tcp = (struct tcp_hdr *)(pkt + iphlen);
