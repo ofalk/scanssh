@@ -22,6 +22,12 @@ jobs:
             deps: dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled crb && dnf install -y epel-release && dnf install -y gcc make autoconf automake libpcap-devel libevent-devel libdnet-devel
           - container: ubuntu:latest
             deps: apt-get update && apt-get install -y gcc make autoconf automake libpcap-dev libevent-dev libdumbnet-dev
+          - container: debian:stable
+            deps: apt-get update && apt-get install -y gcc make autoconf automake libpcap-dev libevent-dev libdumbnet-dev
+          - container: alpine:latest
+            deps: apk add --no-cache gcc g++ make autoconf automake musl-dev libpcap-dev libevent-dev libdnet-dev
+          - container: archlinux:latest
+            deps: pacman -Syu --noconfirm gcc make autoconf automake libpcap libevent libdnet
 
     steps:
       - name: Checkout code
@@ -84,10 +90,29 @@ jobs:
             make
             ./scanssh -V
 
+  build-openbsd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build on OpenBSD
+        uses: vmactions/openbsd-vm@v1
+        with:
+          usesh: true
+          prepare: pkg_add gcc gmake autoconf-2.72 automake-1.17 libpcap libevent libdnet
+          run: |
+            export AUTOCONF_VERSION=2.72
+            export AUTOMAKE_VERSION=1.17
+            autoreconf -f -i
+            ./configure
+            gmake
+            ./scanssh -V
+
   create-dist:
     runs-on: ubuntu-latest
     container: fedora:latest
-    needs: [build-linux, build-macos, build-freebsd]
+    needs: [build-linux, build-macos, build-freebsd, build-openbsd]
     if: github.event_name == 'release'
     steps:
       - name: Checkout code
