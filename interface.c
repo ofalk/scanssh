@@ -275,8 +275,8 @@ interface_init(char *dev, int naddresses, char **addresses, char *filter)
 		struct timeval tv = SS_POLL_INTERVAL;
 
 		syslog(LOG_INFO, "switching to polling mode");
-		timeout_set(&inter->if_recvev, interface_poll_recv, inter);
-		timeout_add(&inter->if_recvev, &tv);
+		evtimer_set(&inter->if_recvev, interface_poll_recv, inter);
+		evtimer_add(&inter->if_recvev, &tv);
 	}
 }
 
@@ -408,7 +408,7 @@ interface_poll_recv(int fd, short type, void *arg)
 	struct interface *inter = arg;
 	struct timeval tv = SS_POLL_INTERVAL;
 
-	timeout_add(&inter->if_recvev, &tv);
+	evtimer_add(&inter->if_recvev, &tv);
 
 	interface_recv(fd, type, arg);
 }
