@@ -34,19 +34,21 @@
 struct interface {
 	TAILQ_ENTRY(interface) next;
 
-	struct intf_entry if_ent;
 	struct event if_recvev;
 	pcap_t *if_pcap;
 	eth_t *if_eth;
 	int if_dloff;
 
 	char if_filter[1024];
+
+	struct intf_entry if_ent;
 };
 
 void interface_initialize(void);
 void interface_init(char *, int, char **, char *);
 struct interface *interface_find(char *);
 struct interface *interface_find_addr(struct addr *);
+char *interface_find_for_dst(struct addr *dst);
 
 void interface_close(struct interface *);
 void interface_close_all(void);

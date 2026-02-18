@@ -1,7 +1,8 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT([scanssh],[2.1.3.1],[https://github.com/ofalk/scanssh/issues])
+AC_INIT([scanssh],[2.1.4],[https://github.com/ofalk/scanssh/issues])
 AC_CONFIG_SRCDIR([scanssh])
 AC_CONFIG_SRCDIR(scanssh.c)
+AC_CONFIG_HEADERS([config.h])
 
 AM_INIT_AUTOMAKE
 
@@ -210,7 +211,6 @@ then
 else
 	CFLAGS="$CFLAGS -I$DNETCOMPAT $DNETINC"
 fi
-LIBS="$LIBS $DNETLIB"
 
 dnl Checks for libevent
 AC_MSG_CHECKING(for libevent)
@@ -253,7 +253,6 @@ AC_SUBST(EVENTINC)
 AC_SUBST(EVENTLIB)
 
 CFLAGS="$CFLAGS $EVENTINC"
-LIBS="$LIBS $EVENTLIB"
 
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h sys/time.h unistd.h)
@@ -263,7 +262,8 @@ AC_CHECK_HEADER(sys/select.h, [havesysselect=yes], )
 if test $havesysselect = yes; then
  AC_MSG_CHECKING([for fd_mask in sys/select.h])
  AC_EGREP_HEADER(fd_mask, sys/select.h,
-  [ AC_DEFINE(HAVE_FDMASK_IN_SELECT)
+  [ AC_DEFINE(HAVE_FDMASK_IN_SELECT, 1,
+    [Define if fd_mask is defined in <sys/select.h>])
     AC_MSG_RESULT([yes])], AC_MSG_RESULT([no]))
 fi
 dnl Checks for typedefs, structures, and compiler characteristics.
@@ -276,12 +276,14 @@ AC_CHECK_TYPE(u_int8_t, unsigned char)
 
 AC_MSG_CHECKING([for struct sockaddr_storage in sys/socket.h])
 AC_EGREP_HEADER(sockaddr_storage, sys/socket.h,
-	[ AC_DEFINE(HAVE_SOCKADDR_STORAGE)
+	[ AC_DEFINE(HAVE_SOCKADDR_STORAGE, 1,
+	  [Define if your system knows about struct sockaddr_storage])
 	  AC_MSG_RESULT([yes])], AC_MSG_RESULT([no])
 )
 AC_MSG_CHECKING([for struct addrinfo in netdb.h])
 AC_EGREP_HEADER(addrinfo, netdb.h,
-	[ AC_DEFINE(HAVE_STRUCT_ADDRINFO)
+	[ AC_DEFINE(HAVE_STRUCT_ADDRINFO, 1,
+	  [Define if your system has struct addrinfo])
 	  AC_MSG_RESULT([yes])], AC_MSG_RESULT([no])
 )
 AC_MSG_CHECKING([for timeradd in sys/time.h])
@@ -291,7 +293,8 @@ AC_EGREP_CPP(yes,
 #ifdef timeradd
 yes
 #endif
-],	[ AC_DEFINE(HAVE_TIMERADD)
+],	[ AC_DEFINE(HAVE_TIMERADD, 1,
+	  [Define if timeradd is defined in <sys/time.h>])
 	  AC_MSG_RESULT([yes])], AC_MSG_RESULT([no])
 )
 AC_MSG_CHECKING([for byte order of raw socket I/O])
@@ -309,7 +312,8 @@ AC_EGREP_CPP(yes,
 	 #endif
 	],
 		AC_MSG_RESULT([good byte order]),
-			[ AC_DEFINE(BSD_RAWSOCK_ORDER)
+			[ AC_DEFINE(BSD_RAWSOCK_ORDER, 1,
+			  [Define if your raw sockets have arguments in host order as in BSD])
 			  AC_MSG_RESULT([bad byte order])
                         ]
           ),
@@ -328,14 +332,14 @@ AC_MSG_CHECKING([for sa_family_t])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
  #include <sys/types.h>
  #include <sys/socket.h>]], [[sa_family_t x;]])],[AC_MSG_RESULT(yes)],[AC_MSG_RESULT([no])
-  AC_DEFINE(sa_family_t, int)
+  AC_DEFINE(sa_family_t, int, [Define to int if your system does not know about sa_family_t])
 ])
 
 AC_MSG_CHECKING([for socklen_t])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
  #include <sys/types.h>
  #include <sys/socket.h>]], [[socklen_t x;]])],[AC_MSG_RESULT(yes)],[AC_MSG_RESULT([no])
-  AC_DEFINE(socklen_t, int)
+  AC_DEFINE(socklen_t, int, [Define to int if your system does not know about socklen_t])
 ])
 
 AC_MSG_CHECKING([for NI_NUMERICHOST])
@@ -343,8 +347,8 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
  #include <sys/types.h>
  #include <sys/socket.h>
  #include <netdb.h>]], [[char x[NI_NUMERICHOST];]])],[AC_MSG_RESULT(yes)],[AC_MSG_RESULT([no])
-  AC_DEFINE(NI_NUMERICHOST, 1)
-  AC_DEFINE(NI_MAXHOST, 256)
+  AC_DEFINE(NI_NUMERICHOST, 1, [NI_NUMERICHOST constant])
+  AC_DEFINE(NI_MAXHOST, 256, [NI_MAXHOST constant])
 ])
 
 AC_MSG_CHECKING([for NI_MAXSERV])
@@ -352,7 +356,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
  #include <sys/types.h>
  #include <sys/socket.h>
  #include <netdb.h>]], [[char x[NI_MAXSERV];]])],[AC_MSG_RESULT(yes)],[AC_MSG_RESULT([no])
-  AC_DEFINE(NI_MAXSERV, 32)
+  AC_DEFINE(NI_MAXSERV, 32, [NI_MAXSERV constant])
 ])
 
 AC_CHECK_FUNCS(gettimeofday select socket strdup strerror strtol seteuid)

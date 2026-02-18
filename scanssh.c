@@ -1150,6 +1150,30 @@ main(int argc, char **argv)
 
 	interface_initialize();
 
+	/*
+	 * If no interface was specified, try to auto-detect the correct one
+	 * based on the first target address. This is important for local
+	 * network scanning where the default interface may not be the one
+	 * that routes to the target.
+	 */
+	if (dev == NULL && argc > 0) {
+		struct addr first_dst;
+		char addr_buf[256];
+		char *first_addr = argv[0];
+		char *colon;
+
+		strlcpy(addr_buf, first_addr, sizeof(addr_buf));
+		colon = strchr(addr_buf, ':');
+		if (colon)
+			*colon = '\0';
+		if (addr_pton(addr_buf, &first_dst) == 0) {
+			char *detected_if = interface_find_for_dst(&first_dst);
+			if (detected_if) {
+				dev = detected_if;
+			}
+		}
+	}
+
 	/* Initialize the specified interfaces */
 	interface_init(dev, 0, NULL,
 	    "(tcp[13] & 18 = 18 or tcp[13] & 4 = 4)");
