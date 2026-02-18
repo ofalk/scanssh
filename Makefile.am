@@ -4,7 +4,7 @@ bin_PROGRAMS = scanssh
 
 scanssh_SOURCES = scanssh.c atomicio.c exclude.c connecter.c xmalloc.c \
 	interface.c socks.c http.c telnet.c exclude.h interface.h \
-	scanssh.h socks.h xmalloc.h
+	scanssh.h socks.h string-compat.h xmalloc.h
 scanssh_LDADD = @LIBOBJS@ @PCAPLIB@ @EVENTLIB@ @DNETLIB@
 CFLAGS = @CFLAGS@
 
