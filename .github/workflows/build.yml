@@ -100,7 +100,7 @@ jobs:
         uses: vmactions/openbsd-vm@v1
         with:
           usesh: true
-          prepare: pkg_add gcc-11.2.0p19 gmake autoconf-2.72p0 automake-1.18 libevent libdnet
+          prepare: pkg_add gmake autoconf%2.72 automake%1.18 libevent libdnet
           run: |
             AUTOCONF_VERSION=2.72 AUTOMAKE_VERSION=1.18 /usr/local/bin/autoreconf-2.72 -f -i
             ./configure
