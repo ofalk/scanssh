@@ -456,7 +456,7 @@ void
 usage(char *name)
 {
 	fprintf(stderr, 
-	    "%s: [-VIERhp] [-s scanners] [-n ports] [-e excludefile] [-i if] [-b alias] <IP address|network>...\n\n"
+	    "%s: [-VIERhp] [-s scanners] [-n ports] [-e excludefile] [-i if] [-u socks hosts] [-m maxfds] [-r syns] <IP address|network>...\n\n"
 	    "\t-V          print version number of scanssh,\n"
 	    "\t-I          do not send identification string,\n"
 	    "\t-E          exit if exclude file is missing,\n"
@@ -464,8 +464,10 @@ usage(char *name)
 	    "\t-p	       proxy detection mode; set scanners and ports,\n"
 	    "\t-n <port>   the port number to scan.\n"
 	    "\t-e <file>   exclude the IP addresses and networks in <file>,\n"
-	    "\t-b <alias>  specifies the IP alias to connect from,\n"
 	    "\t-i <if>     specifies the local interface,\n"
+	    "\t-u <hosts>  comma-separated list of SOCKS host:port proxies,\n"
+	    "\t-m <maxfds> maximum number of concurrent open sockets,\n"
+	    "\t-r <syns>   number of SYN probes sent per second,\n"
 	    "\t-h          this message.\n"
 	    "\t-s <modes>  uses the following modules for scanning:\n",
 	    name);
